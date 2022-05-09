@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'getlocation.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(const MyApp());
@@ -26,41 +27,28 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
+
+ initState(){
+   Location();
+ }
+
+ Location() async {
+   getlocation GetLocation=getlocation();
+   GetLocation.determinePosition();
+
+   print(GetLocation.Lattitude);
+   print(GetLocation.Longtitude);
+ }
+
 class _MyHomePageState extends State<MyHomePage> {
-  Future<Position> determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
-
-    return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: ElevatedButton(
-          onPressed: () {
-              print(determinePosition());
+          onPressed: ()  {
+
           },
           child: Text("Get Location"),
         ),
@@ -70,4 +58,8 @@ class _MyHomePageState extends State<MyHomePage> {
     // TODO: implement build
     throw UnimplementedError();
   }
+}
+
+class a{
+
 }
