@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:weatherapp/TextStyle.dart';
+import 'package:weatherapp/networkingstuff.dart';
 import 'getlocation.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+
+const apiKey= 'b57065650a27b22fd7a7dda901a0a6ef';
 
 void main() {
   runApp(const MyApp());
@@ -27,39 +33,51 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-
- initState(){
-   Location();
- }
-
- Location() async {
-   getlocation GetLocation=getlocation();
-   GetLocation.determinePosition();
-
-   print(GetLocation.Lattitude);
-   print(GetLocation.Longtitude);
- }
-
 class _MyHomePageState extends State<MyHomePage> {
+
+  initState() {
+    LocationData();
+  }
+
+  var Longtitude;
+  var Latitude;
+
+  LocationData() async {
+    getlocation GetLocation = getlocation();
+    await GetLocation.determinePosition();
+
+   Latitude= GetLocation.Lattitude;
+   Longtitude=  GetLocation.Longtitude;
+
+   NetworkHelper networkHelper=  NetworkHelper('https://api.openweathermap.org/data/2.5/weather?lat=$Latitude&lon=$Longtitude&appid=$apiKey');
+   var weatherData= await networkHelper.getData();
+
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: ElevatedButton(
-          onPressed: ()  {
 
-          },
-          child: Text("Get Location"),
+
+    return Scaffold(
+      body: Container(
+
+      child: Center(
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text(
+              "Location",style: MyTextStyle,
+            ),
+
+            Text("Temparatue",style: MyTextStyle,)
+
+          ],
         ),
+      ),
       ),
     );
 
     // TODO: implement build
     throw UnimplementedError();
   }
-}
-
-class a{
-
 }
